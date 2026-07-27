@@ -1,176 +1,53 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>かんばん照合アプリ</title>
+  <meta charset="UTF-8" />
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, maximum-scale=1.0"
+  />
 
-  <style>
-    * {
-      box-sizing: border-box;
-    }
+  <title>かざすだけ かんばん照合</title>
 
-    body {
-      margin: 0;
-      font-family: sans-serif;
-      background: #111;
-      color: white;
-      text-align: center;
-    }
+  <link rel="stylesheet" href="style.css" />
 
-    header {
-      padding: 12px;
-      background: #222;
-      font-size: 20px;
-      font-weight: bold;
-    }
-
-    .camera-area {
-      position: relative;
-      width: 100%;
-      max-width: 500px;
-      margin: 0 auto;
-      background: black;
-    }
-
-    video {
-      width: 100%;
-      height: auto;
-      display: block;
-    }
-
-    .guide {
-      position: absolute;
-      left: 5%;
-      width: 90%;
-      border: 3px solid white;
-      border-radius: 10px;
-      pointer-events: none;
-    }
-
-    .reference-guide {
-      top: 5%;
-      height: 40%;
-    }
-
-    .kanban-guide {
-      bottom: 5%;
-      height: 40%;
-    }
-
-    .label {
-      position: absolute;
-      left: 15px;
-      padding: 5px 10px;
-      background: rgba(0, 0, 0, 0.7);
-      border-radius: 5px;
-      font-size: 16px;
-      font-weight: bold;
-    }
-
-    .reference-label {
-      top: 7%;
-    }
-
-    .kanban-label {
-      top: 54%;
-    }
-
-    #result {
-      margin: 15px auto;
-      width: 90%;
-      max-width: 500px;
-      padding: 18px;
-      border-radius: 12px;
-      background: #555;
-      font-size: 28px;
-      font-weight: bold;
-    }
-
-    #startButton {
-      width: 90%;
-      max-width: 500px;
-      padding: 15px;
-      margin-bottom: 20px;
-      border: none;
-      border-radius: 10px;
-      font-size: 20px;
-      font-weight: bold;
-      cursor: pointer;
-    }
-
-    .message {
-      padding: 0 15px 20px;
-      font-size: 14px;
-      color: #ddd;
-    }
-  </style>
+  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
 </head>
 
 <body>
+  <header>
+    かざすだけ かんばん照合
+  </header>
 
-  <header>かざすだけ かんばん照合</header>
+  <main>
+    <div class="camera-area">
+      <video id="camera" autoplay playsinline muted></video>
 
-  <div class="camera-area">
-    <video id="camera" autoplay playsinline muted></video>
+      <div class="guide guide-top">
+        <div class="guide-label">上：照合板</div>
+      </div>
 
-    <div class="guide reference-guide"></div>
-    <div class="guide kanban-guide"></div>
+      <div class="guide guide-bottom">
+        <div class="guide-label">下：出荷かんばん</div>
+      </div>
+    </div>
 
-    <div class="label reference-label">上：照合板</div>
-    <div class="label kanban-label">下：出荷かんばん</div>
-  </div>
+    <div id="result">
+      カメラ開始待ち
+    </div>
 
-  <div id="result">カメラ待機中</div>
+    <button id="startButton" type="button">
+      カメラを開始
+    </button>
 
-  <button id="startButton">カメラを開始</button>
+    <div id="details">
+上側：未読取
+下側：未読取
+    </div>
 
-  <div class="message" id="message">
-    照合板を上、出荷かんばんを下に並べてください。
-  </div>
+    <canvas id="captureCanvas" hidden></canvas>
+  </main>
 
-  <script>
-    const camera = document.getElementById("camera");
-    const startButton = document.getElementById("startButton");
-    const result = document.getElementById("result");
-    const message = document.getElementById("message");
-
-    async function startCamera() {
-      try {
-        const stream = await navigator.mediaDevices.getUserMedia({
-          video: {
-            facingMode: {
-              ideal: "environment"
-            }
-          },
-          audio: false
-        });
-
-        camera.srcObject = stream;
-        await camera.play();
-
-        result.textContent = "照合待ち";
-        result.style.background = "#c28b00";
-
-        startButton.textContent = "カメラ起動中";
-        startButton.disabled = true;
-
-        message.textContent =
-          "白い枠の上側に照合板、下側に出荷かんばんを合わせてください。";
-
-      } catch (error) {
-        console.error(error);
-
-        result.textContent = "カメラ起動エラー";
-        result.style.background = "#b00020";
-
-        message.textContent =
-          "カメラを起動できませんでした：" + error.name;
-      }
-    }
-
-    startButton.addEventListener("click", startCamera);
-  </script>
-
+  <script src="script.js"></script>
 </body>
 </html>
