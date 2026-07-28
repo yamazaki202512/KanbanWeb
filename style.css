@@ -37,18 +37,18 @@ video {
   position: absolute;
   left: 5%;
   width: 90%;
-  height: 34%;
+  height: 42%;
   border: 4px solid white;
   border-radius: 10px;
   pointer-events: none;
 }
 
 .guide-top {
-  top: 5%;
+  top: 3%;
 }
 
 .guide-bottom {
-  bottom: 5%;
+  bottom: 3%;
 }
 
 .guide-label {
