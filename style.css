@@ -86,3 +86,96 @@ button {
   font-weight: bold;
   cursor: pointer;
 }
+/* ========================================
+   スマホ画面をスクロール不要にする調整
+======================================== */
+
+html,
+body {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
+}
+
+body {
+  box-sizing: border-box;
+}
+
+/* 判定結果 */
+#result {
+  position: fixed;
+  top: 5px;
+  left: 5px;
+  right: 5px;
+  z-index: 20;
+
+  min-height: 42px;
+  margin: 0;
+  padding: 8px;
+
+  box-sizing: border-box;
+  text-align: center;
+  font-size: 24px;
+  font-weight: bold;
+
+  background-color: rgba(255, 255, 255, 0.92);
+  border-radius: 8px;
+}
+
+/* カメラ開始ボタン */
+#startButton {
+  position: fixed;
+  top: 58px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 20;
+
+  min-width: 180px;
+  min-height: 42px;
+  margin: 0;
+  padding: 8px 16px;
+
+  font-size: 18px;
+}
+
+/* カメラ映像 */
+#camera {
+  position: fixed;
+  top: 108px;
+  left: 0;
+
+  width: 100vw;
+  height: calc(100vh - 108px);
+
+  object-fit: cover;
+  background-color: #000;
+}
+
+/* OCRの細かい読取り結果は、開発中だけ小さく表示 */
+#details {
+  position: fixed;
+  left: 5px;
+  right: 5px;
+  bottom: 5px;
+  z-index: 20;
+
+  max-height: 55px;
+  padding: 4px;
+
+  overflow-y: auto;
+  box-sizing: border-box;
+
+  font-size: 10px;
+  line-height: 1.2;
+
+  background-color: rgba(255, 255, 255, 0.75);
+}
+
+/* OCR用の非表示キャンバス */
+#captureCanvas {
+  display: none;
+}
+header {
+  display: none;
+}

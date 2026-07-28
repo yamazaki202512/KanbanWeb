@@ -15,11 +15,15 @@
 </head>
 
 <body>
-  <header>
-    かざすだけ かんばん照合
-  </header>
-
   <main>
+    <div id="result">
+      カメラ開始待ち
+    </div>
+
+    <button id="startButton" type="button">
+      カメラを開始
+    </button>
+
     <div class="camera-area">
       <video id="camera" autoplay playsinline muted></video>
 
@@ -31,14 +35,6 @@
         <div class="guide-label">下：出荷かんばん</div>
       </div>
     </div>
-
-    <div id="result">
-      カメラ開始待ち
-    </div>
-
-    <button id="startButton" type="button">
-      カメラを開始
-    </button>
 
     <div id="details">
 上側：未読取
