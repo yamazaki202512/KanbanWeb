@@ -29,6 +29,11 @@ const canvas = document.getElementById("captureCanvas");
 const ctx = canvas.getContext("2d");
 const details = document.getElementById("details");
 
+const topCanvas = document.createElement("canvas");
+const topCtx = topCanvas.getContext("2d");
+
+const bottomCanvas = document.createElement("canvas");
+const bottomCtx = bottomCanvas.getContext("2d");
 let isReading = false;
 function captureCameraImage() {
   if (!camera.videoWidth || !camera.videoHeight) {
@@ -45,6 +50,37 @@ function captureCameraImage() {
     canvas.width,
     canvas.height
   );
+  const halfHeight = canvas.height / 2;
+
+topCanvas.width = canvas.width;
+topCanvas.height = halfHeight;
+
+bottomCanvas.width = canvas.width;
+bottomCanvas.height = halfHeight;
+
+topCtx.drawImage(
+  canvas,
+  0,
+  0,
+  canvas.width,
+  halfHeight,
+  0,
+  0,
+  topCanvas.width,
+  topCanvas.height
+);
+
+bottomCtx.drawImage(
+  canvas,
+  0,
+  halfHeight,
+  canvas.width,
+  halfHeight,
+  0,
+  0,
+  bottomCanvas.width,
+  bottomCanvas.height
+);
 
   return true;
 }
@@ -57,13 +93,21 @@ async function readTextFromImage() {
   result.textContent = "文字を読み取り中...";
 
   try {
-    const ocr = await Tesseract.recognize(
-      canvas,
-      "jpn+eng"
-    );
+    const topOcr = await Tesseract.recognize(
+  topCanvas,
+  "jpn+eng"
+);
 
-    details.textContent = ocr.data.text;
-    result.textContent = "読み取り完了";
+const bottomOcr = await Tesseract.recognize(
+  bottomCanvas,
+  "jpn+eng"
+);
+
+details.textContent =
+  "上側：" + topOcr.data.text +
+  "\n\n下側：" + bottomOcr.data.text;
+
+result.textContent = "上下の読み取り完了";
   } catch (error) {
     console.error(error);
     result.textContent = "OCRエラー";
