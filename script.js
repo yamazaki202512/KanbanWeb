@@ -52,18 +52,23 @@ function captureCameraImage() {
   );
   const halfHeight = canvas.height / 2;
 
-topCanvas.width = canvas.width;
-topCanvas.height = halfHeight;
+  const cropX = canvas.width * 0.15;
+const cropWidth = canvas.width * 0.70;
+const cropHeight = halfHeight * 0.60;
+const cropY = halfHeight * 0.20;
 
-bottomCanvas.width = canvas.width;
-bottomCanvas.height = halfHeight;
+topCanvas.width = cropWidth;
+topCanvas.height = cropHeight;
+
+bottomCanvas.width = cropWidth;
+bottomCanvas.height = cropHeight;
 
 topCtx.drawImage(
   canvas,
-  0,
-  0,
-  canvas.width,
-  halfHeight,
+  cropX,
+  cropY,
+  cropWidth,
+  cropHeight,
   0,
   0,
   topCanvas.width,
@@ -72,10 +77,10 @@ topCtx.drawImage(
 
 bottomCtx.drawImage(
   canvas,
-  0,
-  halfHeight,
-  canvas.width,
-  halfHeight,
+  cropX,
+  halfHeight + cropY,
+  cropWidth,
+  cropHeight,
   0,
   0,
   bottomCanvas.width,
