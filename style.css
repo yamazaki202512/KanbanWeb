@@ -183,8 +183,8 @@ header {
 .ocr-area {
   position: fixed;
   left: 15vw;
-  width: 70vw;
-  height: 24vh;
+  width: 72vw;
+  height: 18vh;
   border: 3px solid yellow;
   box-sizing: border-box;
   pointer-events: none;
@@ -192,9 +192,21 @@ header {
 }
 
 .ocr-area-top {
-  top: 22vh;
+  top: 24vh;
 }
 
 .ocr-area-bottom {
-  top: 56vh;
+  top: 60vh;
+}
+#settingsButton {
+  position: fixed;
+  top: 60px;
+  right: 12px;
+  z-index: 30;
+  padding: 8px 12px;
+  font-size: 16px;
+  border: none;
+  border-radius: 8px;
+  background-color: rgba(255, 255, 255, 0.9);
+  color: #000;
 }
