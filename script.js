@@ -108,11 +108,27 @@ const bottomOcr = await Tesseract.recognize(
   "jpn+eng"
 );
 
-details.textContent =
-  "上側：" + topOcr.data.text +
-  "\n\n下側：" + bottomOcr.data.text;
+const topPartNumber = extractPartNumber(topOcr.data.text);
+const topBackNumber = extractBackNumber(
+  topOcr.data.text,
+  topPartNumber
+);
 
-result.textContent = "上下の読み取り完了";
+const bottomPartNumber = extractPartNumber(bottomOcr.data.text);
+const bottomBackNumber = extractBackNumber(
+  bottomOcr.data.text,
+  bottomPartNumber
+);
+
+details.textContent =
+  "上側\n" +
+  "品番：" + (topPartNumber || "見つかりません") + "\n" +
+  "背番：" + (topBackNumber || "見つかりません") +
+  "\n\n下側\n" +
+  "品番：" + (bottomPartNumber || "見つかりません") + "\n" +
+  "背番：" + (bottomBackNumber || "見つかりません");
+
+result.textContent = "品番・背番を抽出しました";
   } catch (error) {
     console.error(error);
     result.textContent = "OCRエラー";
@@ -125,3 +141,57 @@ setInterval(() => {
     readTextFromImage();
   }
 }, 5000);
+function cleanOcrText(text) {
+  return text
+    .toUpperCase()
+    .replace(/[‐-‒–—―ー]/g, "-")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function extractPartNumber(text) {
+  const cleaned = cleanOcrText(text);
+
+  const matches = cleaned.match(/[A-Z0-9]+(?:-[A-Z0-9]+)+/g);
+
+  if (!matches || matches.length === 0) {
+    return "";
+  }
+
+  const candidates = matches
+    .map(value => value.replace(/-00$/, ""))
+    .filter(value => value.length >= 6);
+
+  if (candidates.length === 0) {
+    return "";
+  }
+
+  candidates.sort((a, b) => b.length - a.length);
+
+  return candidates[0];
+}
+
+function extractBackNumber(text, partNumber) {
+  const cleaned = cleanOcrText(text);
+
+  const withoutPartNumber = partNumber
+    ? cleaned.replace(partNumber, " ")
+    : cleaned;
+
+  const matches = withoutPartNumber.match(/[A-Z]{0,3}-?\d{2,4}|\d{2,4}-[A-Z]/g);
+
+  if (!matches || matches.length === 0) {
+    return "";
+  }
+
+  const candidates = matches.filter(value => {
+    const digits = value.replace(/\D/g, "");
+    return digits.length >= 2 && digits.length <= 4;
+  });
+
+  if (candidates.length === 0) {
+    return "";
+  }
+
+  return candidates[0];
+}
