@@ -2,6 +2,10 @@ const startButton = document.getElementById("startButton");
 const camera = document.getElementById("camera");
 const result = document.getElementById("result");
 
+const settingsButton = document.getElementById("settingsButton");
+
+let isAdjustMode = false;
+
 startButton.addEventListener("click", async () => {
   try {
     const stream = await navigator.mediaDevices.getUserMedia({
@@ -195,3 +199,51 @@ function extractBackNumber(text, partNumber) {
 
   return candidates[0];
 }
+settingsButton.addEventListener("click", () => {
+  isAdjustMode = !isAdjustMode;
+
+  document.body.classList.toggle("adjust-mode", isAdjustMode);
+
+  settingsButton.textContent = isAdjustMode
+    ? "💾 調整を終了"
+    : "⚙️ 枠の調整";
+});
+const ocrAreas = document.querySelectorAll(".ocr-area");
+
+ocrAreas.forEach((area) => {
+  let startX = 0;
+  let startY = 0;
+  let startLeft = 0;
+  let startTop = 0;
+
+  area.addEventListener("pointerdown", (event) => {
+    if (!isAdjustMode) return;
+
+    startX = event.clientX;
+    startY = event.clientY;
+
+    const rect = area.getBoundingClientRect();
+
+    startLeft = rect.left;
+    startTop = rect.top;
+
+    area.setPointerCapture(event.pointerId);
+  });
+
+  area.addEventListener("pointermove", (event) => {
+    if (!isAdjustMode) return;
+    if (!area.hasPointerCapture(event.pointerId)) return;
+
+    const moveX = event.clientX - startX;
+    const moveY = event.clientY - startY;
+
+    area.style.left = `${startLeft + moveX}px`;
+    area.style.top = `${startTop + moveY}px`;
+  });
+
+  area.addEventListener("pointerup", (event) => {
+    if (!isAdjustMode) return;
+
+    area.releasePointerCapture(event.pointerId);
+  });
+});
