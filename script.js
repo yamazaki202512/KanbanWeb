@@ -207,6 +207,10 @@ settingsButton.addEventListener("click", () => {
   settingsButton.textContent = isAdjustMode
     ? "💾 調整を終了"
     : "⚙️ 枠の調整";
+
+    if (!isAdjustMode) {
+  saveOcrAreaPositions();
+}
 });
 const ocrAreas = document.querySelectorAll(".ocr-area");
 
@@ -246,4 +250,45 @@ ocrAreas.forEach((area) => {
 
     area.releasePointerCapture(event.pointerId);
   });
+});
+function saveOcrAreaPositions() {
+  const positions = [];
+
+  ocrAreas.forEach((area) => {
+    const rect = area.getBoundingClientRect();
+
+    positions.push({
+      left: area.style.left || `${rect.left}px`,
+      top: area.style.top || `${rect.top}px`
+    });
+  });
+
+  localStorage.setItem(
+    "ocrAreaPositions",
+    JSON.stringify(positions)
+  );
+}
+function loadOcrAreaPositions() {
+  const saved = localStorage.getItem("ocrAreaPositions");
+
+  if (!saved) return;
+
+  try {
+    const positions = JSON.parse(saved);
+
+    ocrAreas.forEach((area, index) => {
+      const position = positions[index];
+
+      if (!position) return;
+
+      area.style.left = position.left;
+      area.style.top = position.top;
+    });
+  } catch (error) {
+    console.error("枠位置の復元に失敗しました。", error);
+  }
+}
+
+window.addEventListener("load", () => {
+  loadOcrAreaPositions();
 });
