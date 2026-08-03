@@ -44,54 +44,83 @@ function captureCameraImage() {
     return false;
   }
 
-  canvas.width = camera.videoWidth;
-  canvas.height = camera.videoHeight;
+  const videoRect = camera.getBoundingClientRect();
+  const topArea = document.querySelector(".ocr-area-top");
+  const bottomArea = document.querySelector(".ocr-area-bottom");
 
-  ctx.drawImage(
-    camera,
-    0,
-    0,
-    canvas.width,
-    canvas.height
+  if (!topArea || !bottomArea) {
+    return false;
+  }
+
+  const topRect = topArea.getBoundingClientRect();
+  const bottomRect = bottomArea.getBoundingClientRect();
+
+  const scaleX = camera.videoWidth / videoRect.width;
+  const scaleY = camera.videoHeight / videoRect.height;
+
+  const copyAreaToCanvas = (areaRect, targetCanvas, targetContext) => {
+    const sourceX = Math.max(
+      0,
+      (areaRect.left - videoRect.left) * scaleX
+    );
+
+    const sourceY = Math.max(
+      0,
+      (areaRect.top - videoRect.top) * scaleY
+    );
+
+    const sourceWidth = Math.min(
+      camera.videoWidth - sourceX,
+      areaRect.width * scaleX
+    );
+
+    const sourceHeight = Math.min(
+      camera.videoHeight - sourceY,
+      areaRect.height * scaleY
+    );
+
+    if (sourceWidth <= 0 || sourceHeight <= 0) {
+      return false;
+    }
+
+    targetCanvas.width = Math.round(sourceWidth);
+    targetCanvas.height = Math.round(sourceHeight);
+
+    targetContext.clearRect(
+      0,
+      0,
+      targetCanvas.width,
+      targetCanvas.height
+    );
+
+    targetContext.drawImage(
+      camera,
+      sourceX,
+      sourceY,
+      sourceWidth,
+      sourceHeight,
+      0,
+      0,
+      targetCanvas.width,
+      targetCanvas.height
+    );
+
+    return true;
+  };
+
+  const topOk = copyAreaToCanvas(
+    topRect,
+    topCanvas,
+    topCtx
   );
-  const halfHeight = canvas.height / 2;
 
-  const cropX = canvas.width * 0.15;
-const cropWidth = canvas.width * 0.70;
-const cropHeight = halfHeight * 0.60;
-const cropY = halfHeight * 0.20;
+  const bottomOk = copyAreaToCanvas(
+    bottomRect,
+    bottomCanvas,
+    bottomCtx
+  );
 
-topCanvas.width = cropWidth;
-topCanvas.height = cropHeight;
-
-bottomCanvas.width = cropWidth;
-bottomCanvas.height = cropHeight;
-
-topCtx.drawImage(
-  canvas,
-  cropX,
-  cropY,
-  cropWidth,
-  cropHeight,
-  0,
-  0,
-  topCanvas.width,
-  topCanvas.height
-);
-
-bottomCtx.drawImage(
-  canvas,
-  cropX,
-  halfHeight + cropY,
-  cropWidth,
-  cropHeight,
-  0,
-  0,
-  bottomCanvas.width,
-  bottomCanvas.height
-);
-
-  return true;
+  return topOk && bottomOk;
 }
 async function readTextFromImage() {
   if (isReading) return;
