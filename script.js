@@ -307,10 +307,18 @@ const bottomPartNumber = extractPartNumber(
   bottomPartOcr.data.text
 );
 
+const topBackNumber = extractBackNumber(
+  topBackOcr.data.text,
+  ""
+);
+
+const bottomPartNumber = extractPartNumber(
+  bottomPartOcr.data.text
+);
+
 const bottomBackNumber = extractBackNumber(
   bottomBackOcr.data.text,
   ""
-);
 );
 
 details.textContent =
