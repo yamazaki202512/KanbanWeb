@@ -7,6 +7,9 @@ const settingsButton = document.getElementById("settingsButton");
 let isAdjustMode = false;
 
 startButton.addEventListener("click", async () => {
+  result.textContent = "カメラを起動しています...";
+  startButton.textContent = "起動処理中...";
+
   try {
     const stream = await navigator.mediaDevices.getUserMedia({
       video: {
@@ -25,8 +28,8 @@ startButton.addEventListener("click", async () => {
   } catch (error) {
     console.error(error);
 
-    result.textContent =
-      "カメラを起動できませんでした。カメラの使用を許可してください。";
+   result.textContent =
+  "カメラ起動エラー：" + error.name;
   }
 });
 const canvas = document.getElementById("captureCanvas");
