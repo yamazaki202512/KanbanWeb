@@ -39,6 +39,58 @@ const topCtx = topCanvas.getContext("2d");
 const bottomCanvas = document.createElement("canvas");
 const bottomCtx = bottomCanvas.getContext("2d");
 let isReading = false;
+function captureAutoAreas() {
+  if (!camera.videoWidth || !camera.videoHeight) {
+    return false;
+  }
+
+  const sourceWidth = camera.videoWidth;
+  const sourceHeight = camera.videoHeight;
+
+  const sideMargin = sourceWidth * 0.05;
+  const usableWidth = sourceWidth - sideMargin * 2;
+
+  const topY = sourceHeight * 0.08;
+  const topHeight = sourceHeight * 0.38;
+
+  const bottomY = sourceHeight * 0.54;
+  const bottomHeight = sourceHeight * 0.38;
+
+  topCanvas.width = Math.round(usableWidth);
+  topCanvas.height = Math.round(topHeight);
+
+  bottomCanvas.width = Math.round(usableWidth);
+  bottomCanvas.height = Math.round(bottomHeight);
+
+  topCtx.clearRect(0, 0, topCanvas.width, topCanvas.height);
+  bottomCtx.clearRect(0, 0, bottomCanvas.width, bottomCanvas.height);
+
+  topCtx.drawImage(
+    camera,
+    sideMargin,
+    topY,
+    usableWidth,
+    topHeight,
+    0,
+    0,
+    topCanvas.width,
+    topCanvas.height
+  );
+
+  bottomCtx.drawImage(
+    camera,
+    sideMargin,
+    bottomY,
+    usableWidth,
+    bottomHeight,
+    0,
+    0,
+    bottomCanvas.width,
+    bottomCanvas.height
+  );
+
+  return true;
+}
 function captureCameraImage() {
   if (!camera.videoWidth || !camera.videoHeight) {
     return false;
@@ -125,7 +177,7 @@ function captureCameraImage() {
 async function readTextFromImage() {
   if (isReading) return;
 
-  if (!captureCameraImage()) return;
+  if (!captureAutoAreas()) return;
 
   isReading = true;
   result.textContent = "文字を読み取り中...";
@@ -133,12 +185,12 @@ async function readTextFromImage() {
   try {
     const topOcr = await Tesseract.recognize(
   topCanvas,
-  "jpn+eng"
+  "eng"
 );
 
 const bottomOcr = await Tesseract.recognize(
   bottomCanvas,
-  "jpn+eng"
+  "eng"
 );
 
 const topPartNumber = extractPartNumber(topOcr.data.text);
