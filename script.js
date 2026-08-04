@@ -7,9 +7,6 @@ const settingsButton = document.getElementById("settingsButton");
 let isAdjustMode = false;
 
 startButton.addEventListener("click", async () => {
-  result.textContent = "カメラを起動しています...";
-  startButton.textContent = "起動処理中...";
-
   try {
     const stream = await navigator.mediaDevices.getUserMedia({
       video: {
@@ -28,8 +25,8 @@ startButton.addEventListener("click", async () => {
   } catch (error) {
     console.error(error);
 
-   result.textContent =
-  "カメラ起動エラー：" + error.name;
+    result.textContent =
+      "カメラを起動できませんでした。カメラの使用を許可してください。";
   }
 });
 const canvas = document.getElementById("captureCanvas");
@@ -41,18 +38,6 @@ const topCtx = topCanvas.getContext("2d");
 
 const bottomCanvas = document.createElement("canvas");
 const bottomCtx = bottomCanvas.getContext("2d");
-
-const topPartCanvas = document.createElement("canvas");
-const topPartCtx = topPartCanvas.getContext("2d");
-
-const topBackCanvas = document.createElement("canvas");
-const topBackCtx = topBackCanvas.getContext("2d");
-
-const bottomPartCanvas = document.createElement("canvas");
-const bottomPartCtx = bottomPartCanvas.getContext("2d");
-
-const bottomBackCanvas = document.createElement("canvas");
-const bottomBackCtx = bottomBackCanvas.getContext("2d");
 let isReading = false;
 function captureAutoAreas() {
   if (!camera.videoWidth || !camera.videoHeight) {
@@ -102,85 +87,6 @@ function captureAutoAreas() {
     0,
     bottomCanvas.width,
     bottomCanvas.height
-  );
-
-    const cropFromCanvas = (
-    sourceCanvas,
-    targetCanvas,
-    targetCtx,
-    xRatio,
-    yRatio,
-    widthRatio,
-    heightRatio
-  ) => {
-    const sx = sourceCanvas.width * xRatio;
-    const sy = sourceCanvas.height * yRatio;
-    const sw = sourceCanvas.width * widthRatio;
-    const sh = sourceCanvas.height * heightRatio;
-
-    targetCanvas.width = Math.round(sw);
-    targetCanvas.height = Math.round(sh);
-
-    targetCtx.clearRect(
-      0,
-      0,
-      targetCanvas.width,
-      targetCanvas.height
-    );
-
-    targetCtx.drawImage(
-      sourceCanvas,
-      sx,
-      sy,
-      sw,
-      sh,
-      0,
-      0,
-      targetCanvas.width,
-      targetCanvas.height
-    );
-  };
-
-  // 上側：照合板
-  cropFromCanvas(
-    topCanvas,
-    topPartCanvas,
-    topPartCtx,
-    0.35,
-    0.05,
-    0.60,
-    0.28
-  );
-
-  cropFromCanvas(
-    topCanvas,
-    topBackCanvas,
-    topBackCtx,
-    0.05,
-    0.05,
-    0.28,
-    0.32
-  );
-
-  // 下側：かんばん
-  cropFromCanvas(
-    bottomCanvas,
-    bottomPartCanvas,
-    bottomPartCtx,
-    0.20,
-    0.12,
-    0.65,
-    0.22
-  );
-
-  cropFromCanvas(
-    bottomCanvas,
-    bottomBackCanvas,
-    bottomBackCtx,
-    0.25,
-    0.34,
-    0.42,
-    0.22
   );
 
   return true;
@@ -277,51 +183,26 @@ async function readTextFromImage() {
   result.textContent = "文字を読み取り中...";
 
   try {
-  const topPartOcr = await Tesseract.recognize(
-  topPartCanvas,
+    const topOcr = await Tesseract.recognize(
+  topCanvas,
   "eng"
 );
 
-const topBackOcr = await Tesseract.recognize(
-  topBackCanvas,
+const bottomOcr = await Tesseract.recognize(
+  bottomCanvas,
   "eng"
 );
 
-const bottomPartOcr = await Tesseract.recognize(
-  bottomPartCanvas,
-  "eng"
-);
-
-const bottomBackOcr = await Tesseract.recognize(
-  bottomBackCanvas,
-  "eng"
-);
-
-const topPartNumber = extractPartNumber(
-  topPartOcr.data.text
-);
-
+const topPartNumber = extractPartNumber(topOcr.data.text);
 const topBackNumber = extractBackNumber(
-  topBackOcr.data.text,
-  ""
+  topOcr.data.text,
+  topPartNumber
 );
 
-const bottomPartNumber = extractPartNumber(
-  bottomPartOcr.data.text
-);
-
-const topBackNumber = extractBackNumber(
-  topBackOcr.data.text,
-  ""
-);
-
-const bottomPartNumber = extractPartNumber(
-  bottomPartOcr.data.text
-);
-
+const bottomPartNumber = extractPartNumber(bottomOcr.data.text);
 const bottomBackNumber = extractBackNumber(
-  bottomBackOcr.data.text,
-  ""
+  bottomOcr.data.text,
+  bottomPartNumber
 );
 
 details.textContent =
