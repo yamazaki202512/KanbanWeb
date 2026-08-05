@@ -184,7 +184,7 @@ header {
   position: fixed;
   left: 5vw;
   width: 90vw;
-  height: 11vh;
+  height: 14vh;
   border: 3px solid yellow;
   box-sizing: border-box;
   pointer-events: none;
@@ -193,10 +193,13 @@ header {
 
 .ocr-area-top {
   top: 24vh;
+  height: 15vh;
 }
 
 .ocr-area-bottom {
   top: 60vh;
+  height: 15vh;
+}
 }
 #settingsButton {
   position: fixed;
