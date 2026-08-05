@@ -182,9 +182,9 @@ header {
 }
 .ocr-area {
   position: fixed;
-  left: 15vw;
-  width: 72vw;
-  height: 18vh;
+  left: 5vw;
+  width: 90vw;
+  height: 11vh;
   border: 3px solid yellow;
   box-sizing: border-box;
   pointer-events: none;
