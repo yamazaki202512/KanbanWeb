@@ -4,6 +4,11 @@ const result = document.getElementById("result");
 
 const settingsButton = document.getElementById("settingsButton");
 
+const partModeButton = document.getElementById("partModeButton");
+const backModeButton = document.getElementById("backModeButton");
+
+let compareMode = "part";
+
 let isAdjustMode = false;
 
 startButton.addEventListener("click", async () => {

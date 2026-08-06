@@ -219,3 +219,25 @@ header {
     pointer-events: auto;
     touch-action: none;
 }
+.mode-buttons {
+  position: fixed;
+  top: 60px;
+  left: 10px;
+  z-index: 30;
+  display: flex;
+  gap: 8px;
+}
+
+.mode-buttons button {
+  padding: 8px 12px;
+  font-size: 16px;
+  border: 1px solid #888;
+  border-radius: 8px;
+  background-color: rgba(255, 255, 255, 0.9);
+  color: #000;
+}
+
+.mode-buttons button.active {
+  background-color: #ffd54f;
+  font-weight: bold;
+}
