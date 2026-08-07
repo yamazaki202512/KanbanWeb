@@ -305,37 +305,48 @@ ocrAreas.forEach((area) => {
   let startY = 0;
   let startLeft = 0;
   let startTop = 0;
+  let startWidth = 0;
+  let isResizing = false;
 
-  area.addEventListener("pointerdown", (event) => {
-    if (!isAdjustMode) return;
+area.addEventListener("pointerdown", (event) => {
+  if (!isAdjustMode) return;
 
-    startX = event.clientX;
-    startY = event.clientY;
+  startX = event.clientX;
+  startY = event.clientY;
 
-    const rect = area.getBoundingClientRect();
+  const rect = area.getBoundingClientRect();
 
-    startLeft = rect.left;
-    startTop = rect.top;
+  startLeft = rect.left;
+  startTop = rect.top;
+  startWidth = rect.width;
 
-    area.setPointerCapture(event.pointerId);
-  });
+  const distanceFromRight = rect.right - event.clientX;
+  isResizing = distanceFromRight <= 30;
 
-  area.addEventListener("pointermove", (event) => {
-    if (!isAdjustMode) return;
-    if (!area.hasPointerCapture(event.pointerId)) return;
+  area.setPointerCapture(event.pointerId);
+});
 
-    const moveX = event.clientX - startX;
-    const moveY = event.clientY - startY;
+area.addEventListener("pointermove", (event) => {
+  if (!isAdjustMode) return;
+  if (!area.hasPointerCapture(event.pointerId)) return;
 
-    area.style.left = `${startLeft + moveX}px`;
-    area.style.top = `${startTop + moveY}px`;
-  });
+  const moveX = event.clientX - startX;
+const moveY = event.clientY - startY;
 
-  area.addEventListener("pointerup", (event) => {
-    if (!isAdjustMode) return;
+if (isResizing) {
+  const newWidth = Math.max(80, startWidth + moveX);
+  area.style.width = `${newWidth}px`;
+} else {
+  area.style.left = `${startLeft + moveX}px`;
+  area.style.top = `${startTop + moveY}px`;
+}
+});
 
-    area.releasePointerCapture(event.pointerId);
-  });
+area.addEventListener("pointerup", (event) => {
+  if (!isAdjustMode) return;
+
+  area.releasePointerCapture(event.pointerId);
+});
 });
 function saveOcrAreaPositions() {
   const positions = [];

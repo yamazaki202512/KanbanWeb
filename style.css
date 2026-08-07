@@ -126,7 +126,7 @@ body {
 /* カメラ開始ボタン */
 #startButton {
   position: fixed;
-  top: 58px;
+  top: 156px;
   left: 50%;
   transform: translateX(-50%);
   z-index: 20;
@@ -203,7 +203,7 @@ header {
 
 #settingsButton {
   position: fixed;
-  top: 60px;
+  top: 108px;
   right: 12px;
   z-index: 30;
   padding: 8px 12px;
