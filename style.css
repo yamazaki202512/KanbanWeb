@@ -203,11 +203,13 @@ header {
 
 #settingsButton {
   position: fixed;
-  top: 108px;
-  right: 12px;
+  top: 60px;
+  right: 8px;
   z-index: 30;
-  padding: 8px 12px;
-  font-size: 16px;
+
+  padding: 8px 10px;
+  font-size: 14px;
+
   border: none;
   border-radius: 8px;
   background-color: rgba(255, 255, 255, 0.9);
@@ -229,8 +231,8 @@ header {
 }
 
 .mode-buttons button {
-  padding: 8px 12px;
-  font-size: 16px;
+  padding: 8px 9px;
+  font-size: 14px;
   border: 1px solid #888;
   border-radius: 8px;
   background-color: rgba(255, 255, 255, 0.9);
