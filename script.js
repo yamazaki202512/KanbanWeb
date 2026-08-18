@@ -292,11 +292,11 @@ settingsButton.addEventListener("click", () => {
 
   settingsButton.textContent = isAdjustMode
     ? "💾 調整を終了"
-    : "⚙️ 枠の調整";
+    : "⚙️ 枠を調整";
 
-    if (!isAdjustMode) {
-  saveOcrAreaPositions();
-}
+  if (!isAdjustMode) {
+    saveOcrAreaPositions();
+  }
 });
 const ocrAreas = document.querySelectorAll(".ocr-area");
 
@@ -355,18 +355,29 @@ function saveOcrAreaPositions() {
     const rect = area.getBoundingClientRect();
 
     positions.push({
-      left: area.style.left || `${rect.left}px`,
-      top: area.style.top || `${rect.top}px`
-    });
+  left: area.style.left || `${rect.left}px`,
+  top: area.style.top || `${rect.top}px`,
+  width: area.style.width || `${rect.width}px`
+});
   });
 
-  localStorage.setItem(
-    "ocrAreaPositions",
-    JSON.stringify(positions)
-  );
+  const storageKey =
+  compareMode === "part"
+    ? "ocrAreaPositions_part"
+    : "ocrAreaPositions_back";
+
+localStorage.setItem(
+  storageKey,
+  JSON.stringify(positions)
+);
 }
 function loadOcrAreaPositions() {
-  const saved = localStorage.getItem("ocrAreaPositions");
+  const storageKey =
+  compareMode === "part"
+    ? "ocrAreaPositions_part"
+    : "ocrAreaPositions_back";
+
+const saved = localStorage.getItem(storageKey);
 
   if (!saved) return;
 
@@ -380,6 +391,10 @@ function loadOcrAreaPositions() {
 
       area.style.left = position.left;
       area.style.top = position.top;
+
+     if (position.width) {
+      area.style.width = position.width;
+  }
     });
   } catch (error) {
     console.error("枠位置の復元に失敗しました。", error);
@@ -389,3 +404,31 @@ function loadOcrAreaPositions() {
 window.addEventListener("load", () => {
   loadOcrAreaPositions();
 });
+function updateModeButtons() {
+  partModeButton.classList.toggle(
+    "active",
+    compareMode === "part"
+  );
+
+  backModeButton.classList.toggle(
+    "active",
+    compareMode === "back"
+  );
+
+  settingsButton.textContent =
+    compareMode === "part"
+      ? "⚙️ 品番枠を調整"
+      : "⚙️ 背番枠を調整";
+}
+partModeButton.addEventListener("click", () => {
+  compareMode = "part";
+  updateModeButtons();
+  loadOcrAreaPositions();
+});
+
+backModeButton.addEventListener("click", () => {
+  compareMode = "back";
+  updateModeButtons();
+  loadOcrAreaPositions();
+});
+updateModeButtons();
