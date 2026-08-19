@@ -7,6 +7,9 @@ const settingsButton = document.getElementById("settingsButton");
 const partModeButton = document.getElementById("partModeButton");
 const backModeButton = document.getElementById("backModeButton");
 
+const narrowButton = document.getElementById("narrowButton");
+const wideButton = document.getElementById("wideButton");
+
 let compareMode = "part";
 
 let isAdjustMode = false;
@@ -432,3 +435,21 @@ backModeButton.addEventListener("click", () => {
   loadOcrAreaPositions();
 });
 updateModeButtons();
+narrowButton.addEventListener("click", () => {
+  ocrAreas.forEach((area) => {
+    const currentWidth = area.getBoundingClientRect().width;
+    const newWidth = Math.max(80, currentWidth - 20);
+
+    area.style.width = `${newWidth}px`;
+  });
+});
+
+wideButton.addEventListener("click", () => {
+  ocrAreas.forEach((area) => {
+    const currentWidth = area.getBoundingClientRect().width;
+    const maxWidth = window.innerWidth - 20;
+    const newWidth = Math.min(maxWidth, currentWidth + 20);
+
+    area.style.width = `${newWidth}px`;
+  });
+});

@@ -243,3 +243,26 @@ header {
   background-color: #ffd54f;
   font-weight: bold;
 }
+#widthControls {
+  position: fixed;
+  top: 108px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 35;
+
+  display: none;
+  gap: 8px;
+}
+
+.adjust-mode #widthControls {
+  display: flex;
+}
+
+#widthControls button {
+  padding: 8px 14px;
+  font-size: 16px;
+  border: none;
+  border-radius: 8px;
+  background-color: rgba(255, 255, 255, 0.95);
+  color: #000;
+}
