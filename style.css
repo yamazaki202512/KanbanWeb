@@ -245,7 +245,7 @@ header {
 }
 #widthControls {
   position: fixed;
-  top: 108px;
+  top: 205px;
   left: 50%;
   transform: translateX(-50%);
   z-index: 35;
